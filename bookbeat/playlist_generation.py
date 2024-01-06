@@ -10,10 +10,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 download('punkt')
 download('vader_lexicon')
 
-books_df = pd.read_csv('../bookbeat/raw_data/books_sentiment.csv')
-songs_df = pd.read_csv('../bookbeat/raw_data/songs_sentiment.csv')
-
-
 def obtain_compound(text):
     """Función que obtiene el sentimiento de un texto usando SentimentIntensityAnalyzer de Vader, y de éste entrega
     el 'sentiment compound' como output (número entre -1 y 1)"""
@@ -22,7 +18,7 @@ def obtain_compound(text):
     return scores['compound']
 
 
-def playlist_popularity(title):
+def playlist_popularity(title, books_df, songs_df):
     """Función que busca el 'sentiment compound' del título dado y lo compara con el 'sentiment compound' de las
     canciones en el dataset, y genera una playlist de 20 canciones más similares en sentimiento, además tomando en
     cuenta la popularidad de las canciones"""
