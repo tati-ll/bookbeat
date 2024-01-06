@@ -10,8 +10,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 download('punkt')
 download('vader_lexicon')
 
-books_df = pd.read_csv('/home/tati_llana/code/tati-ll/bookbeat/raw_data/books_sentiment.csv')
-songs_df = pd.read_csv('/home/tati_llana/code/tati-ll/bookbeat/raw_data/songs_sentiment.csv')
+books_df = pd.read_csv('../bookbeat/raw_data/books_sentiment.csv')
+songs_df = pd.read_csv('../bookbeat/raw_data/songs_sentiment.csv')
 
 
 def obtain_compound(text):
@@ -32,7 +32,7 @@ def playlist_popularity(title):
     songs_df['abs_dif'] = abs(songs_df['sentiment'] - book_sentiment)
 
     # Seleccionar las 20 canciones más similares en sentimiento
-    similar_songs = songs_df.nsmallest(100, 'abs_dif')
+    similar_songs = songs_df.nsmallest(70, 'abs_dif')
 
     # Ordenar las canciones en base a 'track_popularity'
     sorted_playlist = similar_songs.sort_values(by=['track_popularity', 'abs_dif'], ascending=[False, True]).head(20)
