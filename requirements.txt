@@ -1,0 +1,6 @@
+pandas
+numpy
+string
+nltk
+re
+streamlit
