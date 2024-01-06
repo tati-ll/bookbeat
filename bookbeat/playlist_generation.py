@@ -35,6 +35,6 @@ def playlist_popularity(title):
     similar_songs = songs_df.nsmallest(100, 'abs_dif')
 
     # Ordenar las canciones en base a 'track_popularity'
-    sorted_playlist = similar_songs.sort_values(by=['abs_dif', 'track_popularity'], ascending=[True, False]).head(20)
+    sorted_playlist = similar_songs.sort_values(by=['track_popularity', 'abs_dif'], ascending=[False, True]).head(20)
 
     return sorted_playlist
