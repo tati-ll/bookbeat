@@ -19,13 +19,13 @@ def obtain_compound(text):
     return scores['compound']
 
 
-def playlist_popularity(title, books_df, songs_df):
+def playlist_popularity(book_sentiment, songs_df):
     """Función que busca el 'sentiment compound' del título dado y lo compara con el 'sentiment compound' de las
     canciones en el dataset, y genera una playlist de 20 canciones más similares en sentimiento, además tomando en
     cuenta la popularidad de las canciones"""
 
     # Calcular la diferencia absoluta en el sentimiento
-    songs_df['abs_dif'] = abs(songs_df['sentiment'] - title)
+    songs_df['abs_dif'] = abs(songs_df['sentiment'] - book_sentiment)
 
     # Seleccionar las 20 canciones más similares en sentimiento
     similar_songs = songs_df.nsmallest(70, 'abs_dif')
