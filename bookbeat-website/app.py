@@ -1,11 +1,12 @@
 import streamlit as st
 import os
 import json
-
+from datetime import datetime
 import numpy as np
 import pandas as pd
 
 import sys
+import webbrowser
 sys.path.append("..")
 
 from bookbeat.playlist_generation import playlist_popularity
@@ -48,6 +49,28 @@ def guardar_tracks_json(tracks):
 def obtener_tracks_json():
     with open('tracks.json', 'r') as file:
         return json.load(file)
+import json
+
+def guardar_tokens_json(access_token, refresh_token, expires_at):
+    # Convertir expires_at a una cadena ISO 8601 para hacerla serializable
+    expires_at_str = expires_at.isoformat()
+
+    # Crear un diccionario con los tres tokens
+    tokens = {"access_token": access_token, "refresh_token": refresh_token, "expires_at": expires_at_str}
+
+    # Guardar en un archivo JSON
+    with open('tokens.json', 'w') as file:
+        json.dump(tokens, file)
+
+def obtener_tokens_json():
+    try:
+        # Intentar cargar desde el archivo JSON
+        with open('tokens.json', 'r') as file:
+            tokens = json.load(file)
+            return tokens["access_token"], tokens["refresh_token"], tokens["expires_at"]
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Manejar errores si el archivo no existe o no es un JSON válido
+        return None, None, None
 
 # Llamar a la función de generación de playlist
 if st.button("Generar Playlist"):
@@ -65,33 +88,23 @@ if st.button("Generar Playlist"):
 if st.button("Login with Spotify"):
     auth_url = login()
     st.experimental_set_query_params(auth_url=auth_url)
-
-if "auth_url" in st.experimental_get_query_params():
-    auth_url = st.experimental_get_query_params()["auth_url"]
-    st.write(f"You are being redirected to Spotify authorization: {auth_url}")
+    webbrowser.open(auth_url, new=2)
+    st.stop()
 
 
 if "code" in st.experimental_get_query_params():
     code = st.experimental_get_query_params()["code"]
-    access_token, refresh_token, expires_at = get_access_token(code)
-    st.write("Se detectó el código de autorización de Spotify")
+    access_token, refresh_token, expires_at = obtener_tokens_json()
 
-    if access_token:
+    if access_token is None or refresh_token is None or expires_at is None:
+        # Si no tenemos tokens, obtenerlos
+        access_token, refresh_token, expires_at = get_access_token(code)
+        guardar_tokens_json(access_token, refresh_token, expires_at)
+    if st.button("Crear Playlist en Spotify"):
+        access_token, refresh_token, expires_at = obtener_tokens_json()
         uri_tracks = obtener_tracks_json()
-        if uri_tracks:  # Verificar si uri_tracks existe y tiene contenido
-            st.write("hay uri_Tracks")
-            if st.button("botono"):
-                st.write("Botón presionado")
-            else:
-                st.write("Botón no presionado")
-
-            if st.button("Crear Playlist"):
-                st.write("llamando")
-                playlist_result = create_playlist(access_token, uri_tracks)
-                st.write("holaaa")
-                if "error" in playlist_result:
-                    st.error(f"Error: {playlist_result['error']}")
-                else:
-                    st.success("¡Playlist creada exitosamente!")
+        playlist_result = create_playlist(access_token, expires_at, uri_tracks)
+        if "error" in playlist_result:
+            st.error(f"Error: {playlist_result['error']}")
         else:
-            st.write("La variable uri_tracks no está definida o está vacía")
+            st.success("¡Playlist creada exitosamente!")

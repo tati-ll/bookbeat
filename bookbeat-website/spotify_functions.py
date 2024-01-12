@@ -73,22 +73,16 @@ def token_expired(expires_at):
     return current_time > expiration_time
 
 
-def create_playlist(access_token, tracks_uris):
-    print("1")
+def create_playlist(access_token, expires_at, tracks_uris):
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
     }
-    if token_expired():
-        # Si está vencido, se refresca usando el token de actualización
-        print("2")
-        access_token = refresh_access_token("tu_refresh_token")
-
-    print("3")
+    #access_token = refresh_access_token("tu_refresh_token")
 
     # Datos para la nueva playlist (cambia estos valores según tu lógica)
     playlist_data = {
-        "name": "Mi Nueva Playlist",
+        "name": "FUNCIONOOOO",
         "description": "Una playlist creada desde Streamlit",
         "public": True
     }
@@ -98,15 +92,12 @@ def create_playlist(access_token, tracks_uris):
 
     # Crear la playlist y agregar canciones en una sola solicitud
     response = requests.post(url, headers=headers, json={**playlist_data})
-    print("4")
     if response.status_code == 201:  # 201: Created
         new_playlist = response.json()
         playlist_id = new_playlist['id']
-        print("5")
-
         url_add = f"{API_BASE_URL}playlists/{playlist_id}/tracks"
         response_add = requests.post(url_add, headers=headers, json={"uris": tracks_uris})
-        print("6")
+
         if response_add.status_code == 201:
             return new_playlist
         else:
