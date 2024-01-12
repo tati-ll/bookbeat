@@ -10,10 +10,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 download('punkt')
 download('vader_lexicon')
 
-books_df = pd.read_csv('../bookbeat/raw_data/books_sentiment.csv')
-songs_df = pd.read_csv('../bookbeat/raw_data/songs_sentiment.csv')
-
-
 def obtain_compound(text):
     """Función que obtiene el sentimiento de un texto usando SentimentIntensityAnalyzer de Vader, y de éste entrega
     el 'sentiment compound' como output (número entre -1 y 1)"""
@@ -23,13 +19,13 @@ def obtain_compound(text):
     return scores['compound']
 
 
-def playlist_popularity(book_sentiment, df_songs):
-    """Función que toma el 'sentiment compound' del título dado y lo compara con el 'sentiment compound' de las
+def playlist_popularity(title, books_df, songs_df):
+    """Función que busca el 'sentiment compound' del título dado y lo compara con el 'sentiment compound' de las
     canciones en el dataset, y genera una playlist de 20 canciones más similares en sentimiento, además tomando en
     cuenta la popularidad de las canciones"""
 
     # Calcular la diferencia absoluta en el sentimiento
-    songs_df['abs_dif'] = abs(songs_df['sentiment'] - book_sentiment)
+    songs_df['abs_dif'] = abs(songs_df['sentiment'] - title)
 
     # Seleccionar las 20 canciones más similares en sentimiento
     similar_songs = songs_df.nsmallest(70, 'abs_dif')
