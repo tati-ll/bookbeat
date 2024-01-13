@@ -8,7 +8,7 @@ load_dotenv()
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 CLIENT_ID = 'be74c9aaf5c448c08b74412b92eb7ca3'
 REDIRECT_URI = "http://localhost:8501"
-USER_ID = "macamenarez"
+#USER_ID = "tjllana"
 
 AUTH_URL = "https://accounts.spotify.com/authorize"
 TOKEN_URL = "https://accounts.spotify.com/api/token"
@@ -72,8 +72,12 @@ def token_expired(expires_at):
     expiration_time = datetime.fromtimestamp(expires_at)
     return current_time > expiration_time
 
+def get_user_id(access_token):
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get("https://api.spotify.com/v1/me", headers=headers)
+    return response.json()["id"]
 
-def create_playlist(access_token, expires_at, tracks_uris):
+def create_playlist(access_token, expires_at, tracks_uris, book_title):
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
@@ -82,11 +86,12 @@ def create_playlist(access_token, expires_at, tracks_uris):
 
     # Datos para la nueva playlist (cambia estos valores según tu lógica)
     playlist_data = {
-        "name": "FUNCIONOOOO",
-        "description": "Una playlist creada desde Streamlit",
+        "name": f"{book_title} playlist",
+        "description": f"Una playlist creada para leer {book_title}",
         "public": True
     }
 
+    USER_ID = get_user_id(access_token)
     # URL para crear la playlist y agregar canciones en la API de Spotify
     url = f"{API_BASE_URL}users/{USER_ID}/playlists"
 
