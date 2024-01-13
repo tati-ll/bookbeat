@@ -7,7 +7,10 @@ import pandas as pd
 import sys
 sys.path.append("..")
 
-from bookbeat.playlist_generation import playlist_popularity
+from bookbeat.isbn_number import book_isbn
+from bookbeat.api_google_book import obtener_descripcion_isbn
+from bookbeat.data_cleaning import cleaning_books
+from bookbeat.playlist_generation import obtain_compound, playlist_popularity
 
 '''
 # BOOKBEAT'''
@@ -49,6 +52,7 @@ button = st.button(":blue[Generar Playlist]")
 # Cálculo del sentimiento
 if button:
     # Resultados de la función basada en el título del libro
+
     libro = libro_seleccionado
     resultados_playlist = playlist_popularity(libro, data_book, data_songs)
 
