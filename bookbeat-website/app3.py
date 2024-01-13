@@ -52,9 +52,12 @@ button = st.button(":blue[Generar Playlist]")
 # Cálculo del sentimiento
 if button:
     # Resultados de la función basada en el título del libro
+    isbn = book_isbn(libro_seleccionado,selected_author,data_book)
+    sentence = obtener_descripcion_isbn(isbn)
+    clean_sentence = cleaning_books(sentence)
+    book_sentiment = obtain_compound(clean_sentence)
 
-    libro = libro_seleccionado
-    resultados_playlist = playlist_popularity(libro, data_book, data_songs)
+    resultados_playlist = playlist_popularity(book_sentiment, data_songs)
 
     uri= resultados_playlist['URI'].tolist()
 
