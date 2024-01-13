@@ -97,6 +97,7 @@ def create_playlist(access_token, expires_at, tracks_uris, book_title):
 
     # Crear la playlist y agregar canciones en una sola solicitud
     response = requests.post(url, headers=headers, json={**playlist_data})
+    print(response.status_code)
     if response.status_code == 201:  # 201: Created
         new_playlist = response.json()
         playlist_id = new_playlist['id']
