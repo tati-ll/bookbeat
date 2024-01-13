@@ -17,6 +17,20 @@ apptitle = 'BookBeat'
 
 st.set_page_config(page_title=apptitle, page_icon=":book:")
 
+color_fondo = "#EFF5FF"
+
+# Aplicar el estilo de fondo usando CSS
+st.markdown(
+    f"""
+    <style>
+        body {{
+            background-color: {color_fondo};
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 @st.cache_data
 def carga_dataset():
     # Ruta al archivo CSV
@@ -37,11 +51,11 @@ data_book, data_songs = carga_dataset()
 # Crear un menú desplegable con la lista de libros
 # Filtrar títulos únicos
 unique_title = data_book['Title'].unique()
-libro_seleccionado = st.selectbox("**Selecciona el título de tu libro**", unique_title, index=None, key='libro', placeholder="Choose an option")
+libro_seleccionado = st.selectbox("**Selecciona el título de tu libro**", unique_title, index=None, key='libro', placeholder="Choose a book")
 
 if libro_seleccionado:
     unique_authors = data_book[data_book['Title'] == libro_seleccionado]['Author'].unique()
-    selected_author = st.selectbox("**Selecciona el autor de tu libro**", unique_authors, index=None)
+    selected_author = st.selectbox("**Selecciona el autor de tu libro**", unique_authors, index=None, placeholder="Choose the author")
 
 if libro_seleccionado and selected_author:
     st.write(f"Libro seleccionado: **{libro_seleccionado}** del autor **{selected_author}**")
