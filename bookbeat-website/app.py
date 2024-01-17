@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
-
+import time
 import sys
 import webbrowser
 sys.path.append("..")
@@ -36,30 +36,44 @@ try:
         auth_state = json.load(file)
 except FileNotFoundError:
     # Si el archivo no existe, inicializar el estado de autenticación
-    auth_state = {"logged_in": False}
+    auth_state = {"logged_in": False, "login_time": 0}
 
-# Verificar si ya está autenticado
-if auth_state["logged_in"]:
-    # Si ya está autenticado, mostrar un mensaje y un botón para volver a autenticarse
+
+
+# ...
+
+# Obtener el tiempo actual
+current_time = time.time()
+
+# Verificar si ya está autenticado y si ha pasado más de 9 minutos
+if auth_state["logged_in"] and (current_time - auth_state["login_time"]) < (10 * 60):
+    # Si ya está autenticado y no ha pasado el tiempo límite, mostrar un mensaje
     st.write("¡Logueado exitosamente en Spotify!")
+
+    # Restar el tiempo que ha pasado desde el último login
+    time_remaining = (9 * 60) - (current_time - auth_state["login_time"])
+
     if st.button("Volver a Logear"):
+        # Volver a logear solo si se presiona el botón dentro del tiempo límite
         auth_url = login()
         st.experimental_set_query_params(auth_url=auth_url)
         webbrowser.open(auth_url, new=2)
-        auth_state["logged_in"] = True
+        auth_state["login_time"] = time.time()
         with open(AUTH_STATE_FILE, "w") as file:
             json.dump(auth_state, file)
         st.stop()
 else:
-    # Si no está autenticado, mostrar el botón de log in
+    # Si no está autenticado o ha pasado el tiempo límite, mostrar el botón de log in
     if st.button("Login with Spotify"):
         auth_url = login()
         st.experimental_set_query_params(auth_url=auth_url)
         webbrowser.open(auth_url, new=2)
         auth_state["logged_in"] = True
+        auth_state["login_time"] = time.time()
         with open(AUTH_STATE_FILE, "w") as file:
             json.dump(auth_state, file)
         st.stop()
+
 
 # Crear un menú desplegable con la lista de libros
 #libro_seleccionado = st.selectbox("Selecciona un libro:", data['Book'].tolist(), index=0, key='libro')
