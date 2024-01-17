@@ -28,12 +28,38 @@ ruta_songs = os.path.join(ruta_parent,"..", "raw_data", "songs_sentiment.csv")
 data_book = pd.read_csv(ruta_books)
 data_songs = pd.read_csv(ruta_songs)
 
-if st.button("Login with Spotify"):
-    auth_url = login()
-    st.experimental_set_query_params(auth_url=auth_url)
-    webbrowser.open(auth_url, new=2)
-    st.stop()
+AUTH_STATE_FILE = "auth_state.json"
 
+# Comprobar si el estado de autenticación ya existe en el archivo
+try:
+    with open(AUTH_STATE_FILE, "r") as file:
+        auth_state = json.load(file)
+except FileNotFoundError:
+    # Si el archivo no existe, inicializar el estado de autenticación
+    auth_state = {"logged_in": False}
+
+# Verificar si ya está autenticado
+if auth_state["logged_in"]:
+    # Si ya está autenticado, mostrar un mensaje y un botón para volver a autenticarse
+    st.write("¡Logueado exitosamente en Spotify!")
+    if st.button("Volver a Logear"):
+        auth_url = login()
+        st.experimental_set_query_params(auth_url=auth_url)
+        webbrowser.open(auth_url, new=2)
+        auth_state["logged_in"] = True
+        with open(AUTH_STATE_FILE, "w") as file:
+            json.dump(auth_state, file)
+        st.stop()
+else:
+    # Si no está autenticado, mostrar el botón de log in
+    if st.button("Login with Spotify"):
+        auth_url = login()
+        st.experimental_set_query_params(auth_url=auth_url)
+        webbrowser.open(auth_url, new=2)
+        auth_state["logged_in"] = True
+        with open(AUTH_STATE_FILE, "w") as file:
+            json.dump(auth_state, file)
+        st.stop()
 
 # Crear un menú desplegable con la lista de libros
 #libro_seleccionado = st.selectbox("Selecciona un libro:", data['Book'].tolist(), index=0, key='libro')
@@ -86,6 +112,7 @@ def obtener_tokens_json():
 def generar_tokens():
     if "code" in st.experimental_get_query_params():
         code = st.experimental_get_query_params()["code"]
+
         access_token, refresh_token, expires_at = obtener_tokens_json()
 
         if expires_at is None or datetime.now().timestamp() > datetime.fromisoformat(expires_at).replace(tzinfo=timezone.utc).timestamp():
@@ -119,12 +146,12 @@ if "playlist_result" in st.session_state:
     st.write(st.session_state.playlist_result)
 
 
-if st.button("Crear Playlist en Spotify"):
-        access_token, refresh_token, expires_at = generar_tokens()
-        uri_tracks = obtener_tracks_json()
-        book_title = title[0]
-        playlist_result = create_playlist(access_token, expires_at, uri_tracks, book_title)
-        if "error" in playlist_result:
-            st.error(f"Error: {playlist_result['error']}")
-        else:
-            st.success("¡Playlist creada exitosamente!")
+    if st.button("Crear Playlist en Spotify"):
+            access_token, refresh_token, expires_at = generar_tokens()
+            uri_tracks = obtener_tracks_json()
+            book_title = title[0]
+            playlist_result = create_playlist(access_token, expires_at, uri_tracks, book_title)
+            if "error" in playlist_result:
+                st.error(f"Error: {playlist_result['error']}")
+            else:
+                st.success("¡Playlist creada exitosamente!")
