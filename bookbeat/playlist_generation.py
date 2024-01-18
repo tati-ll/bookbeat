@@ -10,21 +10,19 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 download('punkt')
 download('vader_lexicon')
 
-
-
 def obtain_compound(text):
     """Función que obtiene el sentimiento de un texto usando SentimentIntensityAnalyzer de Vader, y de éste entrega
     el 'sentiment compound' como output (número entre -1 y 1)"""
     sia = SentimentIntensityAnalyzer()
     scores = sia.polarity_scores(text)
+    # Devuelve el sentimiento del libro
     return scores['compound']
 
 
-def playlist_popularity(title, books_df, songs_df):
+def playlist_popularity(book_sentiment, songs_df):
     """Función que busca el 'sentiment compound' del título dado y lo compara con el 'sentiment compound' de las
     canciones en el dataset, y genera una playlist de 20 canciones más similares en sentimiento, además tomando en
     cuenta la popularidad de las canciones"""
-    book_sentiment = books_df.loc[books_df["Book"] == title, "sentiment"].values[0]
 
     # Calcular la diferencia absoluta en el sentimiento
     songs_df['abs_dif'] = abs(songs_df['sentiment'] - book_sentiment)
