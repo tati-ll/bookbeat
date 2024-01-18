@@ -7,6 +7,8 @@ import re
 download('punkt')
 download('stopwords')
 
+from bookbeat.api_google_book import obtener_descripcion_isbn
+
 """Se crea función para limpieza de texto.
 Una función específica para descripción/blurbs de libros.
 Otra específica para letras de canciones."""
@@ -40,9 +42,9 @@ def cleaning_books(sentence):
     sentence = re.sub(pattern, '', sentence, flags=re.IGNORECASE)
 
     # Eliminar espacios duplicados resultantes de las sustituciones
-    sentence = re.sub(r'\s+', ' ', sentence).strip()
+    clean_sentence = re.sub(r'\s+', ' ', sentence).strip()
 
-    return sentence
+    return clean_sentence
 
 
 def cleaning_songs(sentence, language):

@@ -3,4 +3,4 @@ numpy
 string
 nltk
 re
-streamlit
+streamlit==1.29.0
