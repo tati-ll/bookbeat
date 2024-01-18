@@ -14,13 +14,20 @@ def obtener_descripcion_isbn(isbn):
 
     # Verificar si la solicitud fue exitosa (código de estado 200)
     if respuesta.status_code == 200:
-        # Obtener datos del primer resultado (si hay resultados)
-        descripcion_libro = respuesta.json()["items"][0]["volumeInfo"]
+        # Obtener datos del libro
+        libro = respuesta.json()
 
-        # Verificar si hay un resumen disponible
-        resumen = descripcion_libro.get("description", "No hay resumen disponible.")
+        # Verifica si hay libro
+        if libro['totalItems'] != 0:
+            book_description = libro["items"][0]["volumeInfo"]
 
-        return resumen
+            # Verificar si hay un resumen disponible
+            resumen = book_description.get("description", "No hay resumen disponible.")
+            return resumen
+
+        else:
+            return "No se encontro libro"
+
     else:
         # Manejar el caso de error
         return "Error al obtener información del libro."
