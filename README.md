@@ -6,7 +6,7 @@ BookBeat revoluciona la lectura al sincronizar la música perfecta para cada lib
 
 ### Setup:
 - Instala las dependencias con `pip install -r requirements.txt`
-- La aplicación utiliza la API de Spotify:
+- La aplicación utiliza la API de Google Books y de Spotify:
 
 ### Implementación local:
 Usa `streamlit run app.py`
