@@ -150,9 +150,9 @@ def generar_tokens():
 
 
 @st.cache_resource
-def generar_playlist(title, book_sentiment, data_songs):
+def generar_playlist(title, book_sentiment, data_songs, n_tracks):
     libro = title[0]
-    resultados_playlist = playlist_popularity(book_sentiment, data_songs)
+    resultados_playlist = playlist_popularity(book_sentiment, data_songs, n_tracks)
     uri_tracks = resultados_playlist['URI'].tolist()
     guardar_tracks_json(uri_tracks)
     return resultados_playlist[['track_name', 'track_artist']]
@@ -171,6 +171,17 @@ if libro_seleccionado:
 
 if libro_seleccionado and selected_author:
     st.write(f"Libro seleccionado: **{libro_seleccionado}** del autor **{selected_author}**")
+    # Título de la lista desplegable
+    st.write("## Elige el número de canciones para tu playlist")
+
+    # Opciones para la lista desplegable
+    opciones_n_tracks = [20, 30, 40, 50]
+
+    # Lista desplegable para elegir el número de canciones
+    n_tracks = st.selectbox("Número de canciones:", opciones_n_tracks)
+
+    # Mostrar el número de canciones seleccionado
+    st.write(f"Has seleccionado {n_tracks} canciones para tu playlist.")
     button = st.button(":gray[Generar Playlist]")
 
     # Cálculo del sentimiento
@@ -184,15 +195,21 @@ if libro_seleccionado and selected_author:
         else:
             clean_sentence = cleaning_books(sentence)
             book_sentiment = obtain_compound(clean_sentence)
-            playlist_result = generar_playlist(libro_seleccionado, book_sentiment, data_songs)
+            playlist_result = generar_playlist(libro_seleccionado, book_sentiment, data_songs, n_tracks)
+            playlist_result.to_csv("playlist_result.csv", index=False)
             st.session_state.playlist_result = playlist_result
 
 
-            # Mostrar resultados en Streamlit
-            st.write(playlist_result[['track_name','track_artist']])
 
 # Mostrar la tabla si existe en st.session_state
 if "playlist_result" in st.session_state:
+    playlist_result = pd.read_csv("playlist_result.csv")
+    columnas_mostrar = ['track_name', 'track_artist']
+    nuevos_nombres = ['Título de la Canción', 'Artista']
+
+    # Crea un nuevo DataFrame con las columnas seleccionadas y los nuevos nombres
+    playlist_mostrada = playlist_result[columnas_mostrar].rename(columns=dict(zip(columnas_mostrar, nuevos_nombres)))
+    st.write(playlist_mostrada)
     if st.button("Crear Playlist en Spotify"):
             access_token, refresh_token, expires_at = generar_tokens()
             uri_tracks = obtener_tracks_json()
@@ -202,4 +219,7 @@ if "playlist_result" in st.session_state:
                 st.error(f"Error: {api_result['error']}")
             else:
                 st.success("¡Playlist creada exitosamente!")
-                st.write(f"Visita la playlist aquí: {api_result['external_urls']['spotify']}")
+                playlist_link = f"[Visita la playlist aquí]({api_result['external_urls']['spotify']})"
+
+                # Mostrar el enlace utilizando st.markdown
+                st.markdown(playlist_link)
