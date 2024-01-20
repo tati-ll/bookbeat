@@ -70,18 +70,6 @@ if auth_state["logged_in"] and (current_time - auth_state["login_time"]) < (10 *
     # Si ya está autenticado y no ha pasado el tiempo límite, mostrar un mensaje
     st.write("¡Logueado exitosamente en Spotify!")
 
-    # Restar el tiempo que ha pasado desde el último login
-    time_remaining = (9 * 60) - (current_time - auth_state["login_time"])
-
-    if st.button("Volver a Logear"):
-        # Volver a logear solo si se presiona el botón dentro del tiempo límite
-        auth_url = login()
-        st.experimental_set_query_params(auth_url=auth_url)
-        webbrowser.open(auth_url, new=2)
-        auth_state["login_time"] = time.time()
-        with open(AUTH_STATE_FILE, "w") as file:
-            json.dump(auth_state, file)
-        st.stop()
 else:
     # Si no está autenticado o ha pasado el tiempo límite, mostrar el botón de log in
     if st.button("Login with Spotify"):
@@ -170,19 +158,19 @@ if libro_seleccionado:
     selected_author = st.selectbox("**Selecciona el autor de tu libro**", unique_authors, index=None, placeholder="Choose the author")
 
 if libro_seleccionado and selected_author:
-    st.write(f"Libro seleccionado: **{libro_seleccionado}** del autor **{selected_author}**")
     # Título de la lista desplegable
-    st.write("## Elige el número de canciones para tu playlist")
+    #st.write("## Elige el número de canciones para tu playlist")
 
     # Opciones para la lista desplegable
     opciones_n_tracks = [20, 30, 40, 50]
 
     # Lista desplegable para elegir el número de canciones
-    n_tracks = st.selectbox("Número de canciones:", opciones_n_tracks)
+    n_tracks = st.selectbox("**Selecciona el número de canciones**", opciones_n_tracks)
 
     # Mostrar el número de canciones seleccionado
-    st.write(f"Has seleccionado {n_tracks} canciones para tu playlist.")
-    button = st.button(":gray[Generar Playlist]")
+    #st.write(f"Libro seleccionado: **{libro_seleccionado}** del autor **{selected_author}**")
+    st.write(f"Has seleccionado **{n_tracks}** canciones para tu playlist del libro: **{libro_seleccionado}** del autor **{selected_author}**")
+    button = st.button("Generar Playlist")
 
     # Cálculo del sentimiento
     if button:
