@@ -76,8 +76,8 @@ if auth_state["logged_in"] and (current_time - auth_state["login_time"]) < (10 *
     if st.button("Volver a Logear"):
         # Volver a logear solo si se presiona el botón dentro del tiempo límite
         auth_url = login()
+        st.markdown(f"[Click here to login with Spotify]({auth_url})")
         st.experimental_set_query_params(auth_url=auth_url)
-        webbrowser.open(auth_url, new=2)
         auth_state["login_time"] = time.time()
         with open(AUTH_STATE_FILE, "w") as file:
             json.dump(auth_state, file)
@@ -86,8 +86,7 @@ else:
     # Si no está autenticado o ha pasado el tiempo límite, mostrar el botón de log in
     if st.button("Login with Spotify"):
         auth_url = login()
-        st.experimental_set_query_params(auth_url=auth_url)
-        webbrowser.open(auth_url, new=2)
+        st.markdown(f"[Click here to login with Spotify]({auth_url})")
         auth_state["logged_in"] = True
         auth_state["login_time"] = time.time()
         with open(AUTH_STATE_FILE, "w") as file:
