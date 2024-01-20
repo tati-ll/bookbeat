@@ -13,10 +13,10 @@ import sys
 import webbrowser
 sys.path.append("..")
 
-from bookbeat.isbn_number import book_isbn
-from bookbeat.api_google_book import obtener_descripcion_isbn
-from bookbeat.data_cleaning import cleaning_books
-from bookbeat.playlist_generation import obtain_compound, playlist_popularity
+from isbn_number import book_isbn
+from api_google_book import obtener_descripcion_isbn
+from data_cleaning import cleaning_books
+from playlist_generation import obtain_compound, playlist_popularity
 from spotify_functions import login, get_access_token, create_playlist
 
 # -- Set page config
