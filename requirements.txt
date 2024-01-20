@@ -1,7 +1,5 @@
 pandas
 numpy
-string
 nltk
-re
 streamlit==1.29.0
 requests
