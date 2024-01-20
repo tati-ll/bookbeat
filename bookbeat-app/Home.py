@@ -199,15 +199,20 @@ if "playlist_result" in st.session_state:
     playlist_mostrada = playlist_result[columnas_mostrar].rename(columns=dict(zip(columnas_mostrar, nuevos_nombres)))
     st.write(playlist_mostrada)
     if st.button("Crear Playlist en Spotify"):
+        try:
             access_token, refresh_token, expires_at = generar_tokens()
             uri_tracks = obtener_tracks_json()
             print(f"titul: {libro_seleccionado}, uri_tracks: {uri_tracks}, access_token: {access_token}")
             api_result = create_playlist(access_token, expires_at, uri_tracks, libro_seleccionado)
+
+            # Verificar si la respuesta contiene un error
             if "error" in api_result:
                 st.error(f"Error: {api_result['error']}")
             else:
                 st.success("¡Playlist creada exitosamente!")
                 playlist_link = f"[Visita la playlist aquí]({api_result['external_urls']['spotify']})"
-
-                # Mostrar el enlace utilizando st.markdown
                 st.markdown(playlist_link)
+
+        except Exception as e:
+            # Capturar cualquier excepción y mostrar un mensaje amigable
+            st.error(f"Ocurrió un error, no se pudo crear la playlist en Spotify")
