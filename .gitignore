@@ -1,3 +1,4 @@
 *.env
 *.pyc
 *Zone.Identifier
+*.csv:Zone.Identifier
