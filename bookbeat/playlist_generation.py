@@ -19,7 +19,7 @@ def obtain_compound(text):
     return scores['compound']
 
 
-def playlist_popularity(book_sentiment, songs_df):
+def playlist_popularity(book_sentiment, songs_df, n_tracks):
     """Función que busca el 'sentiment compound' del título dado y lo compara con el 'sentiment compound' de las
     canciones en el dataset, y genera una playlist de 20 canciones más similares en sentimiento, además tomando en
     cuenta la popularidad de las canciones"""
@@ -31,6 +31,6 @@ def playlist_popularity(book_sentiment, songs_df):
     similar_songs = songs_df.nsmallest(70, 'abs_dif')
 
     # Ordenar las canciones en base a 'track_popularity'
-    sorted_playlist = similar_songs.sort_values(by=['track_popularity', 'abs_dif'], ascending=[False, True]).head(20)
+    sorted_playlist = similar_songs.sort_values(by=['track_popularity', 'abs_dif'], ascending=[False, True]).head(int(n_tracks))
 
     return sorted_playlist
