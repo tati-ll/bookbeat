@@ -38,6 +38,4 @@ st.write('''Crea tu playlist única para
 
 st.write('''**¡Con BookBeat disfruta de tus libros favoritos con la banda sonora perfecta!**''')
 
-st.image("../raw_data/Modelo_2.png")
-
 st.image("../raw_data/Equipo_2.png")
