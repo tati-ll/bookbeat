@@ -31,9 +31,11 @@ st.markdown(
 st.image("../raw_data/BookBeat_3.png")
 
 st.write('''BookBeat revoluciona la lectura al sincronizar
-         la música perfecta para cada libro, crea una playlist única para
-         así tener una experiencia de lectura inmersiva y emocionalmente sincronizada.
-         ¿Cómo? Usando análisis de sentimiento y un toque de magia…
-         ¡Con BookBeat disfruta de tus libros favoritos con la banda sonora perfecta!''')
+         la música perfecta para cada libro. ''')
 
-st.image("../raw_data/Modelo.png")
+st.write('''Crea tu playlist única para
+         tener una experiencia de *lectura inmersiva* y *emocionalmente sincronizada*.''')
+
+st.write('''**¡Con BookBeat disfruta de tus libros favoritos con la banda sonora perfecta!**''')
+
+st.image("../raw_data/Equipo_2.png")
